@@ -1,0 +1,19 @@
+<com.kennyc.view.MultiStateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/multiStateView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:msv_errorView="@layout/error_view"
+    app:msv_emptyView="@layout/empty_view"
+    app:msv_loadingView="@layout/loading_view"
+    app:msv_viewState="loading"
+    tools:context=".MainActivity">
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@android:layout/simple_list_item_1" />
+
+</com.kennyc.view.MultiStateView>
