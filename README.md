@@ -43,6 +43,16 @@ msv_errorView is the view to be used for the [ERROR ViewState](https://github.co
 msv_viewState is the [ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L34) for the MultiStateView<br>
 The [CONTENT ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L34) is determined by whatever is inside of the tags via XML. <b>NOTE**</b> a Content view must be set for the view to function, this is by design. 
 
+To switch the state of MultiStateView, simply call
+```java 
+public void setViewState(ViewState state)
+```
+
+You can also get the View for the accompanying ViewState by calling
+```java
+public View getView(ViewState state)
+```
+
 #Including in your project
 To include MultiStateView in your project, make the following changes to your build.gradle file
 
