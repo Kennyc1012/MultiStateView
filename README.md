@@ -58,6 +58,10 @@ dependencies {
     compile 'com.kennyc:multistateview:1.0'
 }
 ```
+
+#Contribution
+Pull requests are welcomed and encouraged. If you experience any bugs, please file an [issue](https://github.com/Kennyc1012/MultiStateView/issues)
+
 License
 =======
 
