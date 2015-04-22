@@ -16,7 +16,6 @@ import com.kennyc.multistateview.R;
  * View that contains 4 different states: Content, Error, Empty, and Loading.<br>
  * Each state has their own separate layout which can be shown/hidden by setting
  * the {@link MultiStateView.ViewState} accordingly
- * <p/>
  * Every MultiStateView <b><i>MUST</i></b> contain a content view. The content view
  * is obtained from whatever is inside of the tags of the view via its XML declaration
  */
