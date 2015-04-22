@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion 22
@@ -18,5 +19,34 @@ android {
 
     dependencies {
         compile 'com.android.support:support-annotations:+'
+    }
+
+    bintray {
+        user = project.BINTRAY_USER
+        key = project.BINTRAY_API_KEY
+        configurations = ['published', 'archives']
+        filesSpec {
+            from 'files'
+            into 'standalone_files/level1'
+            rename '(.+)\\.(.+)', '$1-suffix.$2'
+        }
+
+        publish = true
+
+        pkg {
+            repo = 'maven'
+            name = 'msv'
+            publicDownloadNumbers = true
+
+            version {
+                name = '1.1'
+                vcsTag = '1.1'
+                gpg {
+                    sign = true //Determines whether to GPG sign the files. The default is false
+                }
+            }
+
+
+        }
     }
 }
