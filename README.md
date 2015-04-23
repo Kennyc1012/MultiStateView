@@ -7,6 +7,12 @@ The four different states the view can be in are:
 - Error
 - Loading
 
+![screenshot](https://github.com/Kennyc1012/MultiStateView/blob/master/art/content.png)
+![screenshot](https://github.com/Kennyc1012/MultiStateView/blob/master/art/loading.png)
+![screenshot](https://github.com/Kennyc1012/MultiStateView/blob/master/art/empty.png)
+![screenshot](https://github.com/Kennyc1012/MultiStateView/blob/master/art/error.png)
+
+
 # Using MultiStateView
 MultiStateView can be used the same as any other view by adding it a layout file via XML
 ```xml
