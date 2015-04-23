@@ -1,4 +1,5 @@
 # MultiStateView
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MultiStateView-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1726)
 Android View that displays different content based on its state
 
 The four different states the view can be in are:
