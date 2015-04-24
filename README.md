@@ -1,6 +1,7 @@
 # MultiStateView
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MultiStateView-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1726)
-Android View that displays different content based on its state
+Android View that displays different content based on its state.<br>
+Based off of [MeetMe/MultiStateView](https://github.com/MeetMe/Android-MultiStateView)
 
 The four different states the view can be in are:
 - Content
@@ -15,7 +16,7 @@ The four different states the view can be in are:
 
 
 # Using MultiStateView
-MultiStateView can be used the same as any other view by adding it a layout file via XML
+MultiStateView can be used the same as any other view by adding it as a layout file via XML
 ```xml
 <com.kennyc.view.MultiStateView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
