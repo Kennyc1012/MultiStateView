@@ -73,7 +73,7 @@ repositories {
 ## Add dependency
 ```groovy
 dependencies {
-    compile 'com.kennyc:multistateview:1.0'
+    compile 'com.kennyc:multistateview:1.0.1'
 }
 ```
 

@@ -9,7 +9,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName project.VERSION
     }
 
     lintOptions {
@@ -31,7 +31,7 @@ android {
         dryRun = false;
         groupId = 'com.kennyc'
         artifactId = 'multistateview'
-        version = '1.0'
+        version = project.VERSION
         website = 'https://github.com/Kennyc1012/MultiStateView'
         description = 'Android View that displays different content based on its state'
         issueTracker = "${website}/issues"
