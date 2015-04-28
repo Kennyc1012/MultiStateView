@@ -54,7 +54,8 @@ public class MultiStateView extends FrameLayout {
     }
 
     public MultiStateView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(attrs);
     }
 
     public MultiStateView(Context context, AttributeSet attrs, int defStyle) {
