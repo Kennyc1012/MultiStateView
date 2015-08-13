@@ -2,6 +2,7 @@ package com.kennyc.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -12,6 +13,9 @@ import android.widget.FrameLayout;
 
 import com.kennyc.multistateview.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * View that contains 4 different states: Content, Error, Empty, and Loading.<br>
  * Each state has their own separate layout which can be shown/hidden by setting
@@ -20,21 +24,18 @@ import com.kennyc.multistateview.R;
  * is obtained from whatever is inside of the tags of the view via its XML declaration
  */
 public class MultiStateView extends FrameLayout {
-    private static final int UNKNOWN_VIEW = -1;
 
-    private static final int CONTENT_VIEW = 0;
+    public static final int VIEW_STATE_CONTENT = 0;
 
-    private static final int ERROR_VIEW = 1;
+    public static final int VIEW_STATE_ERROR = 1;
 
-    private static final int EMPTY_VIEW = 2;
+    public static final int VIEW_STATE_EMPTY = 2;
 
-    private static final int LOADING_VIEW = 3;
+    public static final int VIEW_STATE_LOADING = 3;
 
-    public enum ViewState {
-        CONTENT,
-        LOADING,
-        EMPTY,
-        ERROR
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({VIEW_STATE_CONTENT, VIEW_STATE_ERROR, VIEW_STATE_EMPTY, VIEW_STATE_LOADING})
+    public @interface ViewState {
     }
 
     private LayoutInflater mInflater;
@@ -47,7 +48,8 @@ public class MultiStateView extends FrameLayout {
 
     private View mEmptyView;
 
-    private ViewState mViewState = ViewState.CONTENT;
+    @ViewState
+    private int mViewState = VIEW_STATE_CONTENT;
 
     public MultiStateView(Context context) {
         this(context, null);
@@ -85,25 +87,24 @@ public class MultiStateView extends FrameLayout {
             addView(mErrorView, mErrorView.getLayoutParams());
         }
 
-        int viewState = a.getInt(R.styleable.MultiStateView_msv_viewState, UNKNOWN_VIEW);
-        if (viewState != UNKNOWN_VIEW) {
-            switch (viewState) {
-                case CONTENT_VIEW:
-                    mViewState = ViewState.CONTENT;
-                    break;
+        int viewState = a.getInt(R.styleable.MultiStateView_msv_viewState, VIEW_STATE_CONTENT);
 
-                case ERROR_VIEW:
-                    mViewState = ViewState.EMPTY;
-                    break;
+        switch (viewState) {
+            case VIEW_STATE_CONTENT:
+                mViewState = VIEW_STATE_CONTENT;
+                break;
 
-                case EMPTY_VIEW:
-                    mViewState = ViewState.EMPTY;
-                    break;
+            case VIEW_STATE_ERROR:
+                mViewState = VIEW_STATE_ERROR;
+                break;
 
-                case LOADING_VIEW:
-                    mViewState = ViewState.LOADING;
-                    break;
-            }
+            case VIEW_STATE_EMPTY:
+                mViewState = VIEW_STATE_EMPTY;
+                break;
+
+            case VIEW_STATE_LOADING:
+                mViewState = VIEW_STATE_LOADING;
+                break;
         }
 
         a.recycle();
@@ -168,18 +169,18 @@ public class MultiStateView extends FrameLayout {
      * @return The {@link View} associated with the {@link com.kennyc.view.MultiStateView.ViewState}, null if no view is present
      */
     @Nullable
-    public View getView(ViewState state) {
+    public View getView(@ViewState int state) {
         switch (state) {
-            case LOADING:
+            case VIEW_STATE_LOADING:
                 return mLoadingView;
 
-            case CONTENT:
+            case VIEW_STATE_CONTENT:
                 return mContentView;
 
-            case EMPTY:
+            case VIEW_STATE_EMPTY:
                 return mEmptyView;
 
-            case ERROR:
+            case VIEW_STATE_ERROR:
                 return mErrorView;
 
             default:
@@ -192,7 +193,8 @@ public class MultiStateView extends FrameLayout {
      *
      * @return
      */
-    public ViewState getViewState() {
+    @ViewState
+    public int getViewState() {
         return mViewState;
     }
 
@@ -201,7 +203,7 @@ public class MultiStateView extends FrameLayout {
      *
      * @param state The {@link com.kennyc.view.MultiStateView.ViewState} to set {@link MultiStateView} to
      */
-    public void setViewState(ViewState state) {
+    public void setViewState(@ViewState int state) {
         if (state != mViewState) {
             mViewState = state;
             setView();
@@ -213,7 +215,7 @@ public class MultiStateView extends FrameLayout {
      */
     private void setView() {
         switch (mViewState) {
-            case LOADING:
+            case VIEW_STATE_LOADING:
                 if (mLoadingView == null) {
                     throw new NullPointerException("Loading View");
                 }
@@ -224,7 +226,7 @@ public class MultiStateView extends FrameLayout {
                 if (mEmptyView != null) mEmptyView.setVisibility(View.GONE);
                 break;
 
-            case EMPTY:
+            case VIEW_STATE_EMPTY:
                 if (mEmptyView == null) {
                     throw new NullPointerException("Empty View");
                 }
@@ -235,7 +237,7 @@ public class MultiStateView extends FrameLayout {
                 if (mContentView != null) mContentView.setVisibility(View.GONE);
                 break;
 
-            case ERROR:
+            case VIEW_STATE_ERROR:
                 if (mErrorView == null) {
                     throw new NullPointerException("Error View");
                 }
@@ -246,7 +248,7 @@ public class MultiStateView extends FrameLayout {
                 if (mEmptyView != null) mEmptyView.setVisibility(View.GONE);
                 break;
 
-            case CONTENT:
+            case VIEW_STATE_CONTENT:
             default:
                 if (mContentView == null) {
                     // Should never happen, the view should throw an exception if no content view is present upon creation
@@ -282,27 +284,27 @@ public class MultiStateView extends FrameLayout {
      * @param state         The {@link com.kennyc.view.MultiStateView.ViewState}to set
      * @param switchToState If the {@link com.kennyc.view.MultiStateView.ViewState} should be switched to
      */
-    public void setViewForState(View view, ViewState state, boolean switchToState) {
+    public void setViewForState(View view, @ViewState int state, boolean switchToState) {
         switch (state) {
-            case LOADING:
+            case VIEW_STATE_LOADING:
                 if (mLoadingView != null) removeView(mLoadingView);
                 mLoadingView = view;
                 addView(mLoadingView);
                 break;
 
-            case EMPTY:
+            case VIEW_STATE_EMPTY:
                 if (mEmptyView != null) removeView(mEmptyView);
                 mEmptyView = view;
                 addView(mEmptyView);
                 break;
 
-            case ERROR:
+            case VIEW_STATE_ERROR:
                 if (mErrorView != null) removeView(mErrorView);
                 mErrorView = view;
                 addView(mErrorView);
                 break;
 
-            case CONTENT:
+            case VIEW_STATE_CONTENT:
                 if (mContentView != null) removeView(mContentView);
                 mContentView = view;
                 addView(mContentView);
@@ -318,7 +320,7 @@ public class MultiStateView extends FrameLayout {
      * @param view  The {@link View} to use
      * @param state The {@link com.kennyc.view.MultiStateView.ViewState} to set
      */
-    public void setViewForState(View view, ViewState state) {
+    public void setViewForState(View view, @ViewState int state) {
         setViewForState(view, state, false);
     }
 
@@ -329,7 +331,7 @@ public class MultiStateView extends FrameLayout {
      * @param state         The {@link com.kennyc.view.MultiStateView.ViewState} to set
      * @param switchToState If the {@link com.kennyc.view.MultiStateView.ViewState} should be switched to
      */
-    public void setViewForState(@LayoutRes int layoutRes, ViewState state, boolean switchToState) {
+    public void setViewForState(@LayoutRes int layoutRes, @ViewState int state, boolean switchToState) {
         if (mInflater == null) mInflater = LayoutInflater.from(getContext());
         View view = mInflater.inflate(layoutRes, this, false);
         setViewForState(view, state, switchToState);
@@ -341,7 +343,7 @@ public class MultiStateView extends FrameLayout {
      * @param layoutRes Layout resource id
      * @param state     The {@link View} state to set
      */
-    public void setViewForState(@LayoutRes int layoutRes, ViewState state) {
+    public void setViewForState(@LayoutRes int layoutRes, @ViewState int state) {
         setViewForState(layoutRes, state, false);
     }
 }

@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
-        mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
+        mMultiStateView.getView(MultiStateView.VIEW_STATE_ERROR).findViewById(R.id.retry)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
+                        mMultiStateView.setViewState(MultiStateView.VIEW_STATE_LOADING);
                         Toast.makeText(getApplicationContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                         Message msg = mHandler.obtainMessage();
                         msg.obj = mMultiStateView;
@@ -63,19 +63,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.error:
-                mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+                mMultiStateView.setViewState(MultiStateView.VIEW_STATE_ERROR);
                 return true;
 
             case R.id.empty:
-                mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
+                mMultiStateView.setViewState(MultiStateView.VIEW_STATE_EMPTY);
                 return true;
 
             case R.id.content:
-                mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+                mMultiStateView.setViewState(MultiStateView.VIEW_STATE_CONTENT);
                 return true;
 
             case R.id.loading:
-                mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
+                mMultiStateView.setViewState(MultiStateView.VIEW_STATE_LOADING);
                 return true;
         }
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             if (msg.obj instanceof MultiStateView) {
-                ((MultiStateView) msg.obj).setViewState(MultiStateView.ViewState.CONTENT);
+                ((MultiStateView) msg.obj).setViewState(MultiStateView.VIEW_STATE_CONTENT);
             }
 
             super.handleMessage(msg);

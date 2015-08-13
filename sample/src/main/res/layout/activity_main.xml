@@ -7,7 +7,7 @@
     app:msv_errorView="@layout/error_view"
     app:msv_emptyView="@layout/empty_view"
     app:msv_loadingView="@layout/loading_view"
-    app:msv_viewState="loading"
+    app:msv_viewState="content"
     tools:context=".MainActivity">
 
     <ListView
