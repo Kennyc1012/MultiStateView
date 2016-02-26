@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
-
 android {
     compileSdkVersion 23
     buildToolsVersion "22.0.1"
@@ -8,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 1
-        versionName project.VERSION
+        versionCode 2
+        versionName "1.1.1"
     }
 
     lintOptions {
@@ -23,18 +21,5 @@ android {
 
     dependencies {
         compile 'com.android.support:support-annotations:+'
-    }
-
-    publish {
-        bintrayUser = project.BINTRAY_USER
-        bintrayKey = project.BINTRAY_API_KEY
-        dryRun = false;
-        groupId = 'com.kennyc'
-        artifactId = 'multistateview'
-        version = project.VERSION
-        website = 'https://github.com/Kennyc1012/MultiStateView'
-        description = 'Android View that displays different content based on its state'
-        issueTracker = "${website}/issues"
-        repository = "${website}.git"
     }
 }
