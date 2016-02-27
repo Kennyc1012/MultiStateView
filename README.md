@@ -67,13 +67,13 @@ To include MultiStateView in your project, make the following changes to your bu
 ## Add repository 
 ```groovy
 repositories {
-    maven { url 'https://dl.bintray.com/kennyc1012/maven' }
+    maven { url 'https://jitpack.io' }
 }
 ```
 ## Add dependency
 ```groovy
 dependencies {
-    compile 'com.kennyc:multistateview:1.1'
+    compile 'com.github.Kennyc1012:MultiStateView:1.1.1'
 }
 ```
 
