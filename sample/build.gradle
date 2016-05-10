@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "24.0.0-rc4"
 
     defaultConfig {
         applicationId "com.kennyc.sample"
