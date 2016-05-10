@@ -25,6 +25,8 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class MultiStateView extends FrameLayout {
 
+    public static final int VIEW_STATE_UNKNOWN = -1;
+
     public static final int VIEW_STATE_CONTENT = 0;
 
     public static final int VIEW_STATE_ERROR = 1;
@@ -34,7 +36,7 @@ public class MultiStateView extends FrameLayout {
     public static final int VIEW_STATE_LOADING = 3;
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({VIEW_STATE_CONTENT, VIEW_STATE_ERROR, VIEW_STATE_EMPTY, VIEW_STATE_LOADING})
+    @IntDef({VIEW_STATE_UNKNOWN, VIEW_STATE_CONTENT, VIEW_STATE_ERROR, VIEW_STATE_EMPTY, VIEW_STATE_LOADING})
     public @interface ViewState {
     }
 
@@ -49,7 +51,7 @@ public class MultiStateView extends FrameLayout {
     private View mEmptyView;
 
     @ViewState
-    private int mViewState = VIEW_STATE_CONTENT;
+    private int mViewState = VIEW_STATE_UNKNOWN;
 
     public MultiStateView(Context context) {
         this(context, null);
