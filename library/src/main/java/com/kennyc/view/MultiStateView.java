@@ -1,5 +1,8 @@
 package com.kennyc.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.IntDef;
@@ -50,6 +53,8 @@ public class MultiStateView extends FrameLayout {
 
     private View mEmptyView;
 
+    private boolean mAnimateViewChanges = false;
+
     @ViewState
     private int mViewState = VIEW_STATE_UNKNOWN;
 
@@ -90,6 +95,7 @@ public class MultiStateView extends FrameLayout {
         }
 
         int viewState = a.getInt(R.styleable.MultiStateView_msv_viewState, VIEW_STATE_CONTENT);
+        mAnimateViewChanges = a.getBoolean(R.styleable.MultiStateView_msv_animateViewChanges, false);
 
         switch (viewState) {
             case VIEW_STATE_CONTENT:
@@ -107,6 +113,11 @@ public class MultiStateView extends FrameLayout {
             case VIEW_STATE_LOADING:
                 mViewState = VIEW_STATE_LOADING;
                 break;
+
+            case VIEW_STATE_UNKNOWN:
+            default:
+                mViewState = VIEW_STATE_UNKNOWN;
+                break;
         }
 
         a.recycle();
@@ -116,7 +127,7 @@ public class MultiStateView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mContentView == null) throw new IllegalArgumentException("Content view is not defined");
-        setView();
+        setView(VIEW_STATE_UNKNOWN);
     }
 
     /* All of the addView methods have been overridden so that it can obtain the content view via XML
@@ -207,25 +218,31 @@ public class MultiStateView extends FrameLayout {
      */
     public void setViewState(@ViewState int state) {
         if (state != mViewState) {
+            int previous = mViewState;
             mViewState = state;
-            setView();
+            setView(previous);
         }
     }
 
     /**
      * Shows the {@link View} based on the {@link com.kennyc.view.MultiStateView.ViewState}
      */
-    private void setView() {
+    private void setView(@ViewState int previousState) {
         switch (mViewState) {
             case VIEW_STATE_LOADING:
                 if (mLoadingView == null) {
                     throw new NullPointerException("Loading View");
                 }
 
-                mLoadingView.setVisibility(View.VISIBLE);
                 if (mContentView != null) mContentView.setVisibility(View.GONE);
                 if (mErrorView != null) mErrorView.setVisibility(View.GONE);
                 if (mEmptyView != null) mEmptyView.setVisibility(View.GONE);
+
+                if (mAnimateViewChanges) {
+                    animateLayoutChange(getView(previousState));
+                } else {
+                    mLoadingView.setVisibility(View.VISIBLE);
+                }
                 break;
 
             case VIEW_STATE_EMPTY:
@@ -233,10 +250,16 @@ public class MultiStateView extends FrameLayout {
                     throw new NullPointerException("Empty View");
                 }
 
-                mEmptyView.setVisibility(View.VISIBLE);
+
                 if (mLoadingView != null) mLoadingView.setVisibility(View.GONE);
                 if (mErrorView != null) mErrorView.setVisibility(View.GONE);
                 if (mContentView != null) mContentView.setVisibility(View.GONE);
+
+                if (mAnimateViewChanges) {
+                    animateLayoutChange(getView(previousState));
+                } else {
+                    mEmptyView.setVisibility(View.VISIBLE);
+                }
                 break;
 
             case VIEW_STATE_ERROR:
@@ -244,10 +267,16 @@ public class MultiStateView extends FrameLayout {
                     throw new NullPointerException("Error View");
                 }
 
-                mErrorView.setVisibility(View.VISIBLE);
+
                 if (mLoadingView != null) mLoadingView.setVisibility(View.GONE);
                 if (mContentView != null) mContentView.setVisibility(View.GONE);
                 if (mEmptyView != null) mEmptyView.setVisibility(View.GONE);
+
+                if (mAnimateViewChanges) {
+                    animateLayoutChange(getView(previousState));
+                } else {
+                    mErrorView.setVisibility(View.VISIBLE);
+                }
                 break;
 
             case VIEW_STATE_CONTENT:
@@ -257,10 +286,16 @@ public class MultiStateView extends FrameLayout {
                     throw new NullPointerException("Content View");
                 }
 
-                mContentView.setVisibility(View.VISIBLE);
+
                 if (mLoadingView != null) mLoadingView.setVisibility(View.GONE);
                 if (mErrorView != null) mErrorView.setVisibility(View.GONE);
                 if (mEmptyView != null) mEmptyView.setVisibility(View.GONE);
+
+                if (mAnimateViewChanges) {
+                    animateLayoutChange(getView(previousState));
+                } else {
+                    mContentView.setVisibility(View.VISIBLE);
+                }
                 break;
         }
     }
@@ -313,7 +348,7 @@ public class MultiStateView extends FrameLayout {
                 break;
         }
 
-        setView();
+        setView(VIEW_STATE_UNKNOWN);
         if (switchToState) setViewState(state);
     }
 
@@ -348,5 +383,38 @@ public class MultiStateView extends FrameLayout {
      */
     public void setViewForState(@LayoutRes int layoutRes, @ViewState int state) {
         setViewForState(layoutRes, state, false);
+    }
+
+    /**
+     * Sets whether an animate will occur when changing between {@link ViewState}
+     *
+     * @param animate
+     */
+    public void setAnimateLayoutChanges(boolean animate) {
+        mAnimateViewChanges = animate;
+    }
+
+    /**
+     * Animates the layout changes between {@link ViewState}
+     *
+     * @param previousView The view that it was currently on
+     */
+    private void animateLayoutChange(@Nullable final View previousView) {
+        if (previousView == null) {
+            getView(mViewState).setVisibility(View.VISIBLE);
+            return;
+        }
+
+        previousView.setVisibility(View.VISIBLE);
+        ObjectAnimator anim = ObjectAnimator.ofFloat(previousView, "alpha", 1.0f, 0.0f).setDuration(250L);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                previousView.setVisibility(View.GONE);
+                getView(mViewState).setVisibility(View.VISIBLE);
+                ObjectAnimator.ofFloat(getView(mViewState), "alpha", 0.0f, 1.0f).setDuration(250L).start();
+            }
+        });
+        anim.start();
     }
 }

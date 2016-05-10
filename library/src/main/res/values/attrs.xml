@@ -11,6 +11,7 @@
             <enum name="empty" value="2" />
             <enum name="loading" value="3" />
         </attr>
+        <attr name="msv_animateViewChanges" format="boolean" />
     </declare-styleable>
 
 </resources>

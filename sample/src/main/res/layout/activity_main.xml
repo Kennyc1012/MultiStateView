@@ -8,6 +8,7 @@
     app:msv_emptyView="@layout/empty_view"
     app:msv_loadingView="@layout/loading_view"
     app:msv_viewState="content"
+    app:msv_animateViewChanges="true"
     tools:context=".MainActivity">
 
     <ListView
