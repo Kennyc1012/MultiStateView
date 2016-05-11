@@ -43,6 +43,7 @@ The attributes to set for MultiStateView are
 <attr name="msv_emptyView" format="reference" />
 <attr name="msv_errorView" format="reference" />
 <attr name="msv_viewState" format="enum">
+<attr name="msv_animateViewChanges" format="boolean" />
 ```
 
 msv_loadingView is the view to be used for the [LOADING ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L34)<br>
@@ -73,7 +74,7 @@ repositories {
 ## Add dependency
 ```groovy
 dependencies {
-    compile 'com.github.Kennyc1012:MultiStateView:1.1.1'
+    compile 'com.github.Kennyc1012:MultiStateView:1.2.0'
 }
 ```
 
