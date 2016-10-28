@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,10 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class MultiStateView extends FrameLayout {
 
+    private static final String TAG_EMPTY = "empty";
+    private static final String TAG_LOADING = "loading";
+    private static final String TAG_ERROR = "error";
+
     public static final int VIEW_STATE_UNKNOWN = -1;
 
     public static final int VIEW_STATE_CONTENT = 0;
@@ -37,6 +42,9 @@ public class MultiStateView extends FrameLayout {
     public static final int VIEW_STATE_EMPTY = 2;
 
     public static final int VIEW_STATE_LOADING = 3;
+    private int mLoadingViewResId;
+    private int mEmptyViewResId;
+    private int mErrorViewResId;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({VIEW_STATE_UNKNOWN, VIEW_STATE_CONTENT, VIEW_STATE_ERROR, VIEW_STATE_EMPTY, VIEW_STATE_LOADING})
@@ -76,23 +84,11 @@ public class MultiStateView extends FrameLayout {
         mInflater = LayoutInflater.from(getContext());
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MultiStateView);
 
-        int loadingViewResId = a.getResourceId(R.styleable.MultiStateView_msv_loadingView, -1);
-        if (loadingViewResId > -1) {
-            mLoadingView = mInflater.inflate(loadingViewResId, this, false);
-            addView(mLoadingView, mLoadingView.getLayoutParams());
-        }
+        mLoadingViewResId = a.getResourceId(R.styleable.MultiStateView_msv_loadingView, -1);
 
-        int emptyViewResId = a.getResourceId(R.styleable.MultiStateView_msv_emptyView, -1);
-        if (emptyViewResId > -1) {
-            mEmptyView = mInflater.inflate(emptyViewResId, this, false);
-            addView(mEmptyView, mEmptyView.getLayoutParams());
-        }
+        mEmptyViewResId = a.getResourceId(R.styleable.MultiStateView_msv_emptyView, -1);
 
-        int errorViewResId = a.getResourceId(R.styleable.MultiStateView_msv_errorView, -1);
-        if (errorViewResId > -1) {
-            mErrorView = mInflater.inflate(errorViewResId, this, false);
-            addView(mErrorView, mErrorView.getLayoutParams());
-        }
+        mErrorViewResId = a.getResourceId(R.styleable.MultiStateView_msv_errorView, -1);
 
         int viewState = a.getInt(R.styleable.MultiStateView_msv_viewState, VIEW_STATE_CONTENT);
         mAnimateViewChanges = a.getBoolean(R.styleable.MultiStateView_msv_animateViewChanges, false);
@@ -185,15 +181,24 @@ public class MultiStateView extends FrameLayout {
     public View getView(@ViewState int state) {
         switch (state) {
             case VIEW_STATE_LOADING:
+
+                ensureLoadingView();
+
                 return mLoadingView;
 
             case VIEW_STATE_CONTENT:
                 return mContentView;
 
             case VIEW_STATE_EMPTY:
+
+                ensureEmptyView();
+
                 return mEmptyView;
 
             case VIEW_STATE_ERROR:
+
+                ensureErrorView();
+
                 return mErrorView;
 
             default:
@@ -230,6 +235,9 @@ public class MultiStateView extends FrameLayout {
     private void setView(@ViewState int previousState) {
         switch (mViewState) {
             case VIEW_STATE_LOADING:
+
+                ensureLoadingView();
+
                 if (mLoadingView == null) {
                     throw new NullPointerException("Loading View");
                 }
@@ -246,6 +254,9 @@ public class MultiStateView extends FrameLayout {
                 break;
 
             case VIEW_STATE_EMPTY:
+
+                ensureEmptyView();
+
                 if (mEmptyView == null) {
                     throw new NullPointerException("Empty View");
                 }
@@ -263,6 +274,9 @@ public class MultiStateView extends FrameLayout {
                 break;
 
             case VIEW_STATE_ERROR:
+
+                ensureErrorView();
+
                 if (mErrorView == null) {
                     throw new NullPointerException("Error View");
                 }
@@ -310,8 +324,20 @@ public class MultiStateView extends FrameLayout {
         if (mContentView != null && mContentView != view) {
             return false;
         }
-
-        return view != mLoadingView && view != mErrorView && view != mEmptyView;
+        Object tag = view.getTag(R.id.tag_multistateview);
+        if (tag == null){
+            return true;
+        }
+        if (tag instanceof String){
+            String viewTag = (String) tag;
+            if (TextUtils.equals(viewTag, TAG_EMPTY)
+                    || TextUtils.equals(viewTag, TAG_ERROR)
+                    || TextUtils.equals(viewTag, TAG_LOADING)
+                    ){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -326,18 +352,21 @@ public class MultiStateView extends FrameLayout {
             case VIEW_STATE_LOADING:
                 if (mLoadingView != null) removeView(mLoadingView);
                 mLoadingView = view;
+                mLoadingView.setTag(R.id.tag_multistateview, TAG_LOADING);
                 addView(mLoadingView);
                 break;
 
             case VIEW_STATE_EMPTY:
                 if (mEmptyView != null) removeView(mEmptyView);
                 mEmptyView = view;
+                mEmptyView.setTag(R.id.tag_multistateview, TAG_EMPTY);
                 addView(mEmptyView);
                 break;
 
             case VIEW_STATE_ERROR:
                 if (mErrorView != null) removeView(mErrorView);
                 mErrorView = view;
+                mErrorView.setTag(R.id.tag_multistateview, TAG_ERROR);
                 addView(mErrorView);
                 break;
 
@@ -416,5 +445,41 @@ public class MultiStateView extends FrameLayout {
             }
         });
         anim.start();
+    }
+
+    private void ensureLoadingView(){
+        if (mLoadingView == null && mLoadingViewResId > -1) {
+            mLoadingView = mInflater.inflate(mLoadingViewResId, this, false);
+            mLoadingView.setTag(R.id.tag_multistateview, TAG_LOADING);
+            addView(mLoadingView, mLoadingView.getLayoutParams());
+
+            if (mViewState != VIEW_STATE_LOADING){
+                mLoadingView.setVisibility(GONE);
+            }
+        }
+    }
+
+    private void ensureEmptyView(){
+        if (mEmptyView == null && mEmptyViewResId > -1) {
+            mEmptyView = mInflater.inflate(mEmptyViewResId, this, false);
+            mEmptyView.setTag(R.id.tag_multistateview, TAG_EMPTY);
+            addView(mEmptyView, mEmptyView.getLayoutParams());
+
+            if (mViewState != VIEW_STATE_EMPTY){
+                mEmptyView.setVisibility(GONE);
+            }
+        }
+    }
+
+    private void ensureErrorView(){
+        if (mErrorView == null && mErrorViewResId > -1) {
+            mErrorView = mInflater.inflate(mErrorViewResId, this, false);
+            mErrorView.setTag(R.id.tag_multistateview, TAG_ERROR);
+            addView(mErrorView, mErrorView.getLayoutParams());
+
+            if (mViewState != VIEW_STATE_ERROR){
+                mErrorView.setVisibility(GONE);
+            }
+        }
     }
 }
