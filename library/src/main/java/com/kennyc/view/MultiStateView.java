@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -62,6 +63,9 @@ public class MultiStateView extends FrameLayout {
     private View mEmptyView;
 
     private boolean mAnimateViewChanges = false;
+
+    @Nullable
+    private StateListener mListener;
 
     @ViewState
     private int mViewState = VIEW_STATE_UNKNOWN;
@@ -226,6 +230,7 @@ public class MultiStateView extends FrameLayout {
             int previous = mViewState;
             mViewState = state;
             setView(previous);
+            if (mListener != null) mListener.onStateChanged(mViewState);
         }
     }
 
@@ -424,6 +429,15 @@ public class MultiStateView extends FrameLayout {
     }
 
     /**
+     * Sets the {@link StateListener} for the view
+     *
+     * @param listener The {@link StateListener} that will receive callbacks
+     */
+    public void setStateListener(StateListener listener) {
+        mListener = listener;
+    }
+
+    /**
      * Animates the layout changes between {@link ViewState}
      *
      * @param previousView The view that it was currently on
@@ -452,6 +466,7 @@ public class MultiStateView extends FrameLayout {
             mLoadingView = mInflater.inflate(mLoadingViewResId, this, false);
             mLoadingView.setTag(R.id.tag_multistateview, TAG_LOADING);
             addView(mLoadingView, mLoadingView.getLayoutParams());
+            if (mListener != null) mListener.onStateInflated(VIEW_STATE_LOADING, mLoadingView);
 
             if (mViewState != VIEW_STATE_LOADING){
                 mLoadingView.setVisibility(GONE);
@@ -464,6 +479,7 @@ public class MultiStateView extends FrameLayout {
             mEmptyView = mInflater.inflate(mEmptyViewResId, this, false);
             mEmptyView.setTag(R.id.tag_multistateview, TAG_EMPTY);
             addView(mEmptyView, mEmptyView.getLayoutParams());
+            if (mListener != null) mListener.onStateInflated(VIEW_STATE_EMPTY, mEmptyView);
 
             if (mViewState != VIEW_STATE_EMPTY){
                 mEmptyView.setVisibility(GONE);
@@ -476,10 +492,28 @@ public class MultiStateView extends FrameLayout {
             mErrorView = mInflater.inflate(mErrorViewResId, this, false);
             mErrorView.setTag(R.id.tag_multistateview, TAG_ERROR);
             addView(mErrorView, mErrorView.getLayoutParams());
+            if (mListener != null) mListener.onStateInflated(VIEW_STATE_ERROR, mErrorView);
 
             if (mViewState != VIEW_STATE_ERROR){
                 mErrorView.setVisibility(GONE);
             }
         }
+    }
+
+    public interface StateListener {
+        /**
+         * Callback for when the {@link ViewState} has changed
+         *
+         * @param viewState The {@link ViewState} that was switched to
+         */
+        void onStateChanged(@ViewState int viewState);
+
+        /**
+         * Callback for when a {@link ViewState} has been inflated
+         *
+         * @param viewState The {@link ViewState} that was inflated
+         * @param view      The {@link View} that was inflated
+         */
+        void onStateInflated(@ViewState int viewState, @NonNull View view);
     }
 }

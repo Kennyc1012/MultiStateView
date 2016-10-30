@@ -3,7 +3,9 @@ package com.kennyc.sample;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +16,7 @@ import android.widget.Toast;
 import com.kennyc.view.MultiStateView;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MultiStateView.StateListener {
 
     private TestHandler mHandler = new TestHandler();
 
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
+        mMultiStateView.setStateListener(this);
         mMultiStateView.getView(MultiStateView.VIEW_STATE_ERROR).findViewById(R.id.retry)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -80,6 +83,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStateChanged(@MultiStateView.ViewState int viewState) {
+        Log.v("MSVSample", "onStateChanged; viewState: " + viewState);
+    }
+
+    @Override
+    public void onStateInflated(@MultiStateView.ViewState int viewState, @NonNull View view) {
+        Log.v("MSVSample", "onStateInflated; viewState: " + viewState + ", view: " + view.toString());
     }
 
     private static class TestHandler extends Handler {
