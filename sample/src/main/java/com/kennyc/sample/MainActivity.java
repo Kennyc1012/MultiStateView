@@ -3,7 +3,6 @@ package com.kennyc.sample;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -90,10 +89,6 @@ public class MainActivity extends AppCompatActivity implements MultiStateView.St
         Log.v("MSVSample", "onStateChanged; viewState: " + viewState);
     }
 
-    @Override
-    public void onStateInflated(@MultiStateView.ViewState int viewState, @NonNull View view) {
-        Log.v("MSVSample", "onStateInflated; viewState: " + viewState + ", view: " + view.toString());
-    }
 
     private static class TestHandler extends Handler {
 

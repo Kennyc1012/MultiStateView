@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -439,13 +438,5 @@ public class MultiStateView extends FrameLayout {
          * @param viewState The {@link ViewState} that was switched to
          */
         void onStateChanged(@ViewState int viewState);
-
-        /**
-         * Callback for when a {@link ViewState} has been inflated
-         *
-         * @param viewState The {@link ViewState} that was inflated
-         * @param view      The {@link View} that was inflated
-         */
-        void onStateInflated(@ViewState int viewState, @NonNull View view);
     }
 }
