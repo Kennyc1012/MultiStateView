@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion project.ext.sdk
+    buildToolsVersion project.ext.buildTools
 
     defaultConfig {
         applicationId "com.kennyc.sample"
         minSdkVersion 11
-        targetSdkVersion 25
+        targetSdkVersion project.ext.sdk
         versionCode 1
         versionName "1.0"
     }

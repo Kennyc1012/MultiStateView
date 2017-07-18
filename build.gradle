@@ -14,8 +14,10 @@ allprojects {
     repositories {
         jcenter()
     }
-    //THIS IS WHAT YOU ARE ADDING
+
     project.ext {
         supportLibraryVersion = "25.3.1"
+        buildTools = "26.0.0"
+        sdk = 26
     }
 }
