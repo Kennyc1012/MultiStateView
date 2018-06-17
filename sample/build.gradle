@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.kennyc.sample"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion project.ext.sdk
         versionCode 1
         versionName "1.0"
@@ -25,6 +25,6 @@ android {
 }
 
 dependencies {
-    compile project(':library')
-    compile "com.android.support:appcompat-v7:$project.ext.supportLibraryVersion"
+    implementation project(':library')
+    implementation "com.android.support:appcompat-v7:$project.ext.supportLibraryVersion"
 }
