@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -176,6 +178,19 @@ public class MultiStateView extends FrameLayout {
     protected boolean addViewInLayout(View child, int index, ViewGroup.LayoutParams params, boolean preventRequestLayout) {
         if (isValidContentView(child)) mContentView = child;
         return super.addViewInLayout(child, index, params, preventRequestLayout);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        return new SavedState(superState, mViewState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        SavedState savedState = (SavedState) state;
+        setViewState(savedState.state);
+        super.onRestoreInstanceState(savedState.getSuperState());
     }
 
     /**
@@ -438,5 +453,35 @@ public class MultiStateView extends FrameLayout {
          * @param viewState The {@link ViewState} that was switched to
          */
         void onStateChanged(@ViewState int viewState);
+    }
+
+    private static class SavedState extends View.BaseSavedState {
+        final int state;
+
+        private SavedState(Parcelable superState, int state) {
+            super(superState);
+            this.state = state;
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            state = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(state);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }
