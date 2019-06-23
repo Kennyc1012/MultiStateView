@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion project.ext.sdk
-    buildToolsVersion project.ext.buildTools
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.kennyc.sample"
         minSdkVersion 14
-        targetSdkVersion project.ext.sdk
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
     }
@@ -26,5 +26,6 @@ android {
 
 dependencies {
     implementation project(':library')
-    implementation "com.android.support:appcompat-v7:$project.ext.supportLibraryVersion"
+    implementation "androidx.appcompat:appcompat:1.0.2"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

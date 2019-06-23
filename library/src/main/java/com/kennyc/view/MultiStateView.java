@@ -189,8 +189,8 @@ public class MultiStateView extends FrameLayout {
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         SavedState savedState = (SavedState) state;
-        setViewState(savedState.state);
         super.onRestoreInstanceState(savedState.getSuperState());
+        setViewState(savedState.state);
     }
 
     /**

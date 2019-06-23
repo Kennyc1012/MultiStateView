@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
 android {
-    compileSdkVersion project.ext.sdk
-    buildToolsVersion project.ext.buildTools
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion project.ext.sdk
+        targetSdkVersion 29
         versionCode 6
         versionName "1.3.2"
     }
@@ -14,12 +15,8 @@ android {
         abortOnError false
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     dependencies {
-        implementation "com.android.support:support-annotations:$project.ext.supportLibraryVersion"
+        implementation 	'androidx.annotation:annotation:1.1.0'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     }
 }
