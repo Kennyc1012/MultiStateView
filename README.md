@@ -46,19 +46,28 @@ The attributes to set for MultiStateView are
 <attr name="msv_animateViewChanges" format="boolean" />
 ```
 
-msv_loadingView is the view to be used for the [LOADING ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L34)<br>
-msv_emptyView is the view to be used for the [EMPTY ViewSate](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L32)<br>
-msv_errorView is the view to be used for the [ERROR ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L30)<br>
-msv_viewState is the [ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L38) for the MultiStateView<br>
-The [CONTENT ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.java#L28) is determined by whatever is inside of the tags via XML. <b>NOTE a Content view must be set for the view to function, this is by design.</b>
+`msv_loadingView` is the view to be used for the `VIEW_STATE_LOADING` <br>
+`msv_emptyView` is the view to be used for the `VIEW_STATE_EMPTY` <br>
+`msv_errorView` is the view to be used for the `VIEW_STATE_ERROR` <br>
+`msv_viewState` is the [ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.kt#L34) for the MultiStateView<br>
+`VIEW_STATE_CONTENT` is determined by whatever is inside of the tags via XML. <b>NOTE a Content view must be set for the view to function, this is by design.</b>
 
 To switch the state of MultiStateView, simply call
-```java 
-public void setViewState(@ViewState int state)
+```kotlin 
+multiStateView.viewState = @ViewState state:Int
+```
+or in java
+```java
+multiStateView.setViewState(@ViewState int state)
 ```
 
 You can also get the View for the accompanying ViewState by calling
+```kotlin 
+multiStateView.getView(@ViewState state:Int):View?
+```
+or in java
 ```java
+@Nullable
 public View getView(@ViewState int state)
 ```
 
