@@ -46,10 +46,11 @@ The attributes to set for MultiStateView are
 <attr name="msv_animateViewChanges" format="boolean" />
 ```
 
-`msv_loadingView` is the view to be used for the `VIEW_STATE_LOADING` <br>
-`msv_emptyView` is the view to be used for the `VIEW_STATE_EMPTY` <br>
-`msv_errorView` is the view to be used for the `VIEW_STATE_ERROR` <br>
+`msv_loadingView` is the view to be used for `VIEW_STATE_LOADING` <br>
+`msv_emptyView` is the view to be used for `VIEW_STATE_EMPTY` <br>
+`msv_errorView` is the view to be used for `VIEW_STATE_ERROR` <br>
 `msv_viewState` is the [ViewState](https://github.com/Kennyc1012/MultiStateView/blob/master/library/src/main/java/com/kennyc/view/MultiStateView.kt#L34) for the MultiStateView<br>
+`msv_animateViewChanges` is a flag to set whether the views should animate in and out when switching states. `false` by default<br>
 `VIEW_STATE_CONTENT` is determined by whatever is inside of the tags via XML. <b>NOTE a Content view must be set for the view to function, this is by design.</b>
 
 To switch the state of MultiStateView, simply call
@@ -71,7 +72,7 @@ or in java
 public View getView(@ViewState int state)
 ```
 
-#Including in your project
+# Including in your project
 To include MultiStateView in your project, make the following changes to your build.gradle file
 
 ## Add repository 
@@ -87,7 +88,7 @@ dependencies {
 }
 ```
 
-#Contribution
+# Contribution
 Pull requests are welcomed and encouraged. If you experience any bugs, please file an [issue](https://github.com/Kennyc1012/MultiStateView/issues)
 
 License
