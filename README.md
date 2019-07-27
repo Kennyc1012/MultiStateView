@@ -55,21 +55,21 @@ The attributes to set for MultiStateView are
 
 To switch the state of MultiStateView, simply call
 ```kotlin 
-multiStateView.viewState = @ViewState state:Int
+multiStateView.viewState = state: ViewState
 ```
 or in java
 ```java
-multiStateView.setViewState(@ViewState int state)
+multiStateView.setViewState(@NonNull ViewState state)
 ```
 
 You can also get the View for the accompanying ViewState by calling
 ```kotlin 
-multiStateView.getView(@ViewState state:Int):View?
+multiStateView.getView(state: ViewState):View?
 ```
 or in java
 ```java
 @Nullable
-public View getView(@ViewState int state)
+public View getView(@NonNull ViewState state)
 ```
 
 # Including in your project
@@ -84,7 +84,7 @@ repositories {
 ## Add dependency
 ```groovy
 dependencies {
-    implementation  'com.github.Kennyc1012:MultiStateView:2.0'
+    implementation  'com.github.Kennyc1012:MultiStateView:2.1'
 }
 ```
 
