@@ -19,11 +19,11 @@ class MainActivity : AppCompatActivity(), MultiStateView.StateListener {
         setContentView(R.layout.activity_main)
         multiStateView = findViewById(R.id.multiStateView)
         multiStateView.listener = this
-        multiStateView.getView(MultiStateView.VIEW_STATE_ERROR)?.findViewById<Button>(R.id.retry)
+        multiStateView.getView(MultiStateView.ViewState.ERROR)?.findViewById<Button>(R.id.retry)
                 ?.setOnClickListener {
-                    multiStateView.viewState = MultiStateView.VIEW_STATE_LOADING
+                    multiStateView.viewState = MultiStateView.ViewState.LOADING
                     Toast.makeText(applicationContext, "Fetching Data", Toast.LENGTH_SHORT).show()
-                    multiStateView.postDelayed({ multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT }, 3000L)
+                    multiStateView.postDelayed({ multiStateView.viewState = MultiStateView.ViewState.CONTENT }, 3000L)
                 }
 
         val list: ListView = multiStateView.findViewById(R.id.list)
@@ -44,22 +44,22 @@ class MainActivity : AppCompatActivity(), MultiStateView.StateListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.error -> {
-                multiStateView.viewState = MultiStateView.VIEW_STATE_ERROR
+                multiStateView.viewState = MultiStateView.ViewState.ERROR
                 return true
             }
 
             R.id.empty -> {
-                multiStateView.viewState = MultiStateView.VIEW_STATE_EMPTY
+                multiStateView.viewState = MultiStateView.ViewState.EMPTY
                 return true
             }
 
             R.id.content -> {
-                multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
+                multiStateView.viewState = MultiStateView.ViewState.CONTENT
                 return true
             }
 
             R.id.loading -> {
-                multiStateView.viewState = MultiStateView.VIEW_STATE_LOADING
+                multiStateView.viewState = MultiStateView.ViewState.LOADING
                 return true
             }
         }
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), MultiStateView.StateListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStateChanged(viewState: Int) {
+    override fun onStateChanged(viewState: MultiStateView.ViewState) {
         Log.v("MSVSample", "onStateChanged; viewState: $viewState")
     }
 }

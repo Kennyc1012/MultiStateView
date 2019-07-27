@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 import androidx.annotation.Nullable
 import com.kennyc.multistateview.R
@@ -21,17 +20,12 @@ class MultiStateView
                           attrs: AttributeSet? = null,
                           defStyle: Int = 0) : FrameLayout(context, attrs, defStyle) {
 
-
-    companion object {
-        const val VIEW_STATE_CONTENT = 0
-        const val VIEW_STATE_ERROR = 1
-        const val VIEW_STATE_EMPTY = 2
-        const val VIEW_STATE_LOADING = 3
+    enum class ViewState {
+        CONTENT,
+        LOADING,
+        ERROR,
+        EMPTY
     }
-
-    @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
-    @IntDef(VIEW_STATE_CONTENT, VIEW_STATE_ERROR, VIEW_STATE_EMPTY, VIEW_STATE_LOADING)
-    annotation class ViewState
 
     private var contentView: View? = null
 
@@ -45,8 +39,7 @@ class MultiStateView
 
     var animateLayoutChanges: Boolean = false
 
-    @ViewState
-    var viewState: Int = VIEW_STATE_CONTENT
+    var viewState: ViewState = ViewState.CONTENT
         set(value) {
             val previousField = field
 
@@ -82,7 +75,12 @@ class MultiStateView
             addView(inflatedErrorView, inflatedErrorView.layoutParams)
         }
 
-        viewState = a.getInt(R.styleable.MultiStateView_msv_viewState, VIEW_STATE_CONTENT)
+        viewState = when (a.getInt(R.styleable.MultiStateView_msv_viewState, VIEW_STATE_CONTENT)) {
+            VIEW_STATE_ERROR -> ViewState.ERROR
+            VIEW_STATE_EMPTY -> ViewState.EMPTY
+            VIEW_STATE_LOADING -> ViewState.LOADING
+            else -> ViewState.CONTENT
+        }
         animateLayoutChanges = a.getBoolean(R.styleable.MultiStateView_msv_animateViewChanges, false)
         a.recycle()
     }
@@ -94,17 +92,12 @@ class MultiStateView
      * @return The [View] associated with the [com.kennyc.view.MultiStateView.ViewState], null if no view is present
      */
     @Nullable
-    fun getView(@ViewState state: Int): View? {
+    fun getView(state: ViewState): View? {
         return when (state) {
-            VIEW_STATE_LOADING -> loadingView
-
-            VIEW_STATE_CONTENT -> contentView
-
-            VIEW_STATE_EMPTY -> emptyView
-
-            VIEW_STATE_ERROR -> errorView
-
-            else -> throw IllegalArgumentException("Unknown ViewState $state")
+            ViewState.LOADING -> loadingView
+            ViewState.CONTENT -> contentView
+            ViewState.EMPTY -> emptyView
+            ViewState.ERROR -> errorView
         }
     }
 
@@ -115,33 +108,31 @@ class MultiStateView
      * @param state         The [com.kennyc.view.MultiStateView.ViewState]to set
      * @param switchToState If the [com.kennyc.view.MultiStateView.ViewState] should be switched to
      */
-    fun setViewForState(view: View, @ViewState state: Int, switchToState: Boolean = false) {
+    fun setViewForState(view: View, state: ViewState, switchToState: Boolean = false) {
         when (state) {
-            VIEW_STATE_LOADING -> {
+            ViewState.LOADING -> {
                 if (loadingView != null) removeView(loadingView)
                 loadingView = view
                 addView(view)
             }
 
-            VIEW_STATE_EMPTY -> {
+            ViewState.EMPTY -> {
                 if (emptyView != null) removeView(emptyView)
                 emptyView = view
                 addView(view)
             }
 
-            VIEW_STATE_ERROR -> {
+            ViewState.ERROR -> {
                 if (errorView != null) removeView(errorView)
                 errorView = view
                 addView(view)
             }
 
-            VIEW_STATE_CONTENT -> {
+            ViewState.CONTENT -> {
                 if (contentView != null) removeView(contentView)
                 contentView = view
                 addView(view)
             }
-
-            else -> throw IllegalArgumentException("Unable to set view for state $state")
         }
 
         if (switchToState) viewState = state
@@ -154,7 +145,7 @@ class MultiStateView
      * @param state         The [com.kennyc.view.MultiStateView.ViewState] to set
      * @param switchToState If the [com.kennyc.view.MultiStateView.ViewState] should be switched to
      */
-    fun setViewForState(@LayoutRes layoutRes: Int, @ViewState state: Int, switchToState: Boolean = false) {
+    fun setViewForState(@LayoutRes layoutRes: Int, state: ViewState, switchToState: Boolean = false) {
         val view = LayoutInflater.from(context).inflate(layoutRes, this, false)
         setViewForState(view, state, switchToState)
     }
@@ -164,7 +155,7 @@ class MultiStateView
         if (contentView == null) throw IllegalArgumentException("Content view is not defined")
 
         when (viewState) {
-            VIEW_STATE_CONTENT -> setView(VIEW_STATE_CONTENT)
+            ViewState.CONTENT -> setView(ViewState.CONTENT)
             else -> contentView?.visibility = View.GONE
         }
     }
@@ -234,9 +225,9 @@ class MultiStateView
     /**
      * Shows the [View] based on the [com.kennyc.view.MultiStateView.ViewState]
      */
-    private fun setView(@ViewState previousState: Int) {
+    private fun setView(previousState: ViewState) {
         when (viewState) {
-            VIEW_STATE_LOADING -> {
+            ViewState.LOADING -> {
                 requireNotNull(loadingView).apply {
                     contentView?.visibility = View.GONE
                     errorView?.visibility = View.GONE
@@ -250,7 +241,7 @@ class MultiStateView
                 }
             }
 
-            VIEW_STATE_EMPTY -> {
+            ViewState.EMPTY -> {
                 requireNotNull(emptyView).apply {
                     contentView?.visibility = View.GONE
                     errorView?.visibility = View.GONE
@@ -264,7 +255,7 @@ class MultiStateView
                 }
             }
 
-            VIEW_STATE_ERROR -> {
+            ViewState.ERROR -> {
                 requireNotNull(errorView).apply {
                     contentView?.visibility = View.GONE
                     loadingView?.visibility = View.GONE
@@ -278,7 +269,7 @@ class MultiStateView
                 }
             }
 
-            VIEW_STATE_CONTENT -> {
+            ViewState.CONTENT -> {
                 requireNotNull(contentView).apply {
                     loadingView?.visibility = View.GONE
                     errorView?.visibility = View.GONE
@@ -290,10 +281,6 @@ class MultiStateView
                         visibility = View.VISIBLE
                     }
                 }
-            }
-
-            else -> {
-                throw IllegalArgumentException("Unable to set state for value $viewState")
             }
         }
     }
@@ -332,23 +319,23 @@ class MultiStateView
          *
          * @param viewState The [ViewState] that was switched to
          */
-        fun onStateChanged(@ViewState viewState: Int)
+        fun onStateChanged(viewState: ViewState)
     }
 
     private class SavedState : BaseSavedState {
-        internal val state: Int
+        internal val state: ViewState
 
-        constructor(superState: Parcelable, state: Int) : super(superState) {
+        constructor(superState: Parcelable, state: ViewState) : super(superState) {
             this.state = state
         }
 
         constructor(parcel: Parcel) : super(parcel) {
-            state = parcel.readInt()
+            state = parcel.readSerializable() as ViewState
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
-            out.writeInt(state)
+            out.writeSerializable(state)
         }
 
         companion object {
@@ -365,3 +352,8 @@ class MultiStateView
         }
     }
 }
+
+private const val VIEW_STATE_CONTENT = 0
+private const val VIEW_STATE_ERROR = 1
+private const val VIEW_STATE_EMPTY = 2
+private const val VIEW_STATE_LOADING = 3
