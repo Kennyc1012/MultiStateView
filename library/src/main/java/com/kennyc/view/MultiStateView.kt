@@ -168,8 +168,12 @@ class MultiStateView
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
-        super.onRestoreInstanceState(state)
-        if (state is SavedState) viewState = state.state
+        if (state is SavedState) {
+            super.onRestoreInstanceState(state.superState)
+            viewState = state.state
+        } else {
+            super.onRestoreInstanceState(state)
+        }
     }
 
     /* All of the addView methods have been overridden so that it can obtain the content view via XML
