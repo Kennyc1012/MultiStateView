@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
-import androidx.annotation.Nullable
 import com.kennyc.multistateview.R
 
 class MultiStateView
@@ -91,7 +90,6 @@ class MultiStateView
      * @param state The [com.kennyc.view.MultiStateView.ViewState] with to return the view for
      * @return The [View] associated with the [com.kennyc.view.MultiStateView.ViewState], null if no view is present
      */
-    @Nullable
     fun getView(state: ViewState): View? {
         return when (state) {
             ViewState.LOADING -> loadingView
@@ -294,7 +292,7 @@ class MultiStateView
      *
      * @param previousView The view that it was currently on
      */
-    private fun animateLayoutChange(@Nullable previousView: View?) {
+    private fun animateLayoutChange(previousView: View?) {
         if (previousView == null) {
             requireNotNull(getView(viewState)).visibility = View.VISIBLE
             return
